@@ -1,0 +1,6 @@
+classes= 1
+train  = /home/qingpeng/git/darknet/data/food/train.txt
+valid  = /home/qingpeng/git/darknet/data/food/test.txt
+
+names = /Users/apple/Documents/code/website/foodlog/models/darknet/data/food.names
+backup = /Users/apple/Documents/code/website/foodlog/models/darknet/backup/food
