@@ -1,0 +1,6 @@
+classes= 1
+train  = /app/app/models/darknet/data/food/train.txt
+valid  = /app/app/models/darknet/data/food/test.txt
+
+names = /app/app/models/darknet/data/food.names
+backup = /app/app/models/darknet/backup/food
