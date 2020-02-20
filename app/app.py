@@ -89,8 +89,8 @@ def predict():
 
 
 if __name__ == "__main__":
-    det_net = darknet.load_net("/app/app/models/darknet/cfg/yolov3-food.cfg", "/app/app/models/darknet/backup/food/yolov3-food_final.weights", 0)
-    det_meta = darknet.load_meta("/app/app/models/darknet/cfg/food.data")
+    det_net = darknet.load_net(b"/app/app/models/darknet/cfg/yolov3-food.cfg", b"/app/app/models/darknet/backup/food/yolov3-food_final.weights", 0)
+    det_meta = darknet.load_meta(b"/app/app/models/darknet/cfg/food.data")
 
     classes = 231
     base_model = Xception(include_top=True, input_shape=(299, 299, 3))
