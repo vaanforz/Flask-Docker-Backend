@@ -4,14 +4,14 @@ Basic Python Flask app in Docker which prints the hostname and IP of the contain
 ### Build application
 Build the Docker image manually by cloning the Git repo.
 ```
-$ git clone https://github.com/lvthillo/python-flask-docker.git
-$ sudo docker build -t flask_image .
+$ git clone https://github.com/vaanforz/Foodlg-Rafiki-Replacement.git
+$ docker build -t flask_image .
 ```
 
 ### Run the container
 Create a container from the image.
 ```
-$ sudo docker run --name my-container -d -p 5000:5000 flask_image
+$ docker run --name my-container -d -p 5000:5000 flask_image
 ```
 
 Now visit http://localhost:8080
