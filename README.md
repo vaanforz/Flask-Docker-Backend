@@ -11,7 +11,7 @@ $ sudo docker build -t flask_image .
 ### Run the container
 Create a container from the image.
 ```
-$ sudo docker run --name my-container -d -p 8080:8080 flask_image
+$ sudo docker run --name my-container -d -p 5000:5000 flask_image
 ```
 
 Now visit http://localhost:8080
