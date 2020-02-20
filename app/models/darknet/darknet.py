@@ -3,7 +3,7 @@ import math
 import random
 from PIL import Image
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+#sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
 
 def sample(probs):
     s = sum(probs)
@@ -45,8 +45,8 @@ class METADATA(Structure):
     _fields_ = [("classes", c_int),
                 ("names", POINTER(c_char_p))]
 
-lib = CDLL("libdarknet.so", RTLD_GLOBAL)
-# lib = CDLL("libdarknet.so", RTLD_GLOBAL)
+#lib = CDLL("libdarknet.so", RTLD_GLOBAL)
+lib = CDLL("/app/app/models/darknet/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]

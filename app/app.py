@@ -82,23 +82,23 @@ def index():
     except:
         return render_template('error.html')
 
-@app.route("/predict", , methods=['POST'])
+@app.route("/predict", methods=['POST'])
 def predict():
 	image_data = request.files['image']
 	return analyze_pic(image_data.read())
 
 
 if __name__ == "__main__":
-	det_net = darknet.load_net("models/darknet/cfg/yolov3-food.cfg", "models/darknet/backup/food/yolov3-food_final.weights", 0)
-    det_meta = darknet.load_meta("models/darknet/cfg/food.data")
+    det_net = darknet.load_net("/app/app/models/darknet/cfg/yolov3-food.cfg", "/app/app/models/darknet/backup/food/yolov3-food_final.weights", 0)
+    det_meta = darknet.load_meta("/app/app/models/darknet/cfg/food.data")
 
     classes = 231
     base_model = Xception(include_top=True, input_shape=(299, 299, 3))
     base_model.layers.pop()
     predictions = Dense(classes, activation='softmax')(base_model.layers[-1].output)
     clf_model = Model(input=base_model.input, output=[predictions])
-    clf_model.load_weights("models/classification/models/xception-0-15-0.82.h5")
+    clf_model.load_weights("/app/app/models/classification/models/xception-0-15-0.82.h5")
     print("[*]Loaded object detection and classification model!")
-    class_dict = {v:k for k,v in np.load("models/classification/class_index/food231.npy")[()].items()}
+    class_dict = {v:k for k,v in np.load("/app/app/models/classification/class_index/food231.npy")[()].items()}
 
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=5000)
