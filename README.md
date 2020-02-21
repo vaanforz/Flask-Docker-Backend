@@ -14,7 +14,7 @@ Create a container from the image.
 $ docker run --name my-container -d -p 5000:5000 flask_image
 ```
 
-Now visit http://localhost:8080
+Now visit http://localhost:5000
 ```
  The hostname of the container is 6095273a4e9b and its IP is 172.17.0.2. 
 ```
