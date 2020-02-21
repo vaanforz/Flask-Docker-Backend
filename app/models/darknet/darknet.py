@@ -3,7 +3,7 @@ import math
 import random
 from PIL import Image
 import os, sys
-#sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+import numpy as np
 
 def sample(probs):
     s = sum(probs)
@@ -19,6 +19,7 @@ def c_array(ctype, values):
     arr = (ctype*len(values))()
     arr[:] = values
     return arr
+
 
 class BOX(Structure):
     _fields_ = [("x", c_float),
@@ -44,6 +45,24 @@ class IMAGE(Structure):
 class METADATA(Structure):
     _fields_ = [("classes", c_int),
                 ("names", POINTER(c_char_p))]
+
+def numpy2darknet_img(image): # v1
+    image = (image / 255.).astype(np.float32)
+    # image = image[..., ::-1]
+
+    assert (image.shape[2] == 3)
+
+    # convert rgb image(h, w, c) to bgr (c, h, w)
+    # image = np.flip(image, 2)
+    data = np.swapaxes(image, 2, 1)
+    data = np.swapaxes(data, 1, 0)
+    print("type: ", data.shape, data.dtype)
+
+    data = np.ascontiguousarray(data)
+
+    im = IMAGE(w=image.shape[1], h=image.shape[0], c=3, data=data.ctypes.data_as(POINTER(c_float)))
+    return im
+
 
 #lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 os.system("make -C /app/app/models/darknet")
@@ -124,8 +143,9 @@ def classify(net, meta, im):
     res = sorted(res, key=lambda x: -x[1])
     return res
 
-def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
-    im = load_image(image, 0, 0)
+def detect(net, meta, image, thresh=.05, hier_thresh=.05, nms=.45):
+    #im = load_image(image, 0, 0)
+    im = numpy2darknet_img(image)
     num = c_int(0)
     pnum = pointer(num)
     predict_image(net, im)
@@ -140,8 +160,8 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
                 b = dets[j].bbox
                 res.append((meta.names[i], dets[j].prob[i], (b.x, b.y, b.w, b.h)))
     res = sorted(res, key=lambda x: -x[1])
-    free_image(im)
-    free_detections(dets, num)
+    # free_image(im)
+    # free_detections(dets, num)
     return res
     
 
