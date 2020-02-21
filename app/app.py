@@ -73,12 +73,7 @@ def analyze_pic(pic_path):
 
 @app.route("/")
 def index():
-    try:
-        host_name = socket.gethostname()
-        host_ip = socket.gethostbyname(host_name)
-        return render_template('index.html', hostname=host_name, ip=host_ip)
-    except:
-        return render_template('error.html')
+    return render_template('index.html')
 
 @app.route("/model/predict", methods=['POST'])
 def detect_and_predict():
