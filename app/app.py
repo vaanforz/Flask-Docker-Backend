@@ -36,7 +36,7 @@ def predict(model, img):
     return y
 
 def analyze_pic(pic_path):
-    img = Image.open(pic_path)
+    img = (Image.open(pic_path)).convert('RGB')
     r = darknet.detect(det_net, det_meta, img_to_array(img))
     width = img.size[0]
     height = img.size[1]
