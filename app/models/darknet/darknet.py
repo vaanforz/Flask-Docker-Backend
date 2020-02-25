@@ -46,25 +46,17 @@ class METADATA(Structure):
     _fields_ = [("classes", c_int),
                 ("names", POINTER(c_char_p))]
 
-def numpy2darknet_img(image): # v1
-    image = (image / 255.).astype(np.float32)
-    # image = image[..., ::-1]
+def array_to_image(arr):
+    # need to return old values to avoid python freeing memory
+    arr = arr.transpose(2,0,1)
+    c = arr.shape[0]
+    h = arr.shape[1]
+    w = arr.shape[2]
+    arr = np.ascontiguousarray(arr.flat, dtype=np.float32) / 255.0
+    data = arr.ctypes.data_as(POINTER(c_float))
+    im = IMAGE(w,h,c,data)
+    return im, arr
 
-    assert (image.shape[2] == 3)
-
-    # convert rgb image(h, w, c) to bgr (c, h, w)
-    # image = np.flip(image, 2)
-    data = np.swapaxes(image, 2, 1)
-    data = np.swapaxes(data, 1, 0)
-    print("type: ", data.shape, data.dtype)
-
-    data = np.ascontiguousarray(data)
-
-    im = IMAGE(w=image.shape[1], h=image.shape[0], c=3, data=data.ctypes.data_as(POINTER(c_float)))
-    return im
-
-
-#lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 os.system("make -C /app/app/models/darknet")
 lib = CDLL("/app/app/models/darknet/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
@@ -143,9 +135,9 @@ def classify(net, meta, im):
     res = sorted(res, key=lambda x: -x[1])
     return res
 
-def detect(net, meta, image, thresh=.05, hier_thresh=.05, nms=.45):
+def detect(net, meta, image, thresh=.01, hier_thresh=.01, nms=.45):
     #im = load_image(image, 0, 0)
-    im = numpy2darknet_img(image)
+    im, arr = array_to_image(image)
     num = c_int(0)
     pnum = pointer(num)
     predict_image(net, im)
@@ -161,7 +153,7 @@ def detect(net, meta, image, thresh=.05, hier_thresh=.05, nms=.45):
                 res.append((meta.names[i], dets[j].prob[i], (b.x, b.y, b.w, b.h)))
     res = sorted(res, key=lambda x: -x[1])
     # free_image(im)
-    # free_detections(dets, num)
+    free_detections(dets, num)
     return res
     
 
