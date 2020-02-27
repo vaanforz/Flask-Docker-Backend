@@ -3,7 +3,9 @@ import socket
 
 import os, sys
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFile
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 from keras import backend as K
 from keras.models import Model
